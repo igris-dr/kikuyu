@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator Diskon</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 50px;
+      text-align: center;
+    }
+    .container {
+      background: #fff;
+      padding: 40px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px gray;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #28a745;
+      color: #fff;
+      cursor: pointer;
+    }
+    #hasil {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 18px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Kalkulator Diskon</h2>
+    <label>Harga Asli (Rp):</label>
+    <input type="text" id="harga" placeholder="Masukkan harga" oninput="formatInput(this)" />
+    <label>Diskon (%):</label>
+    <input type="number" id="diskon" placeholder="Masukkan persen diskon" oninput="validateDiskon(this)" />
+    <button onclick="hitungDiskon()">Hitung</button>
+    <p id="hasil"></p>
+  </div>
+  <script>
+    const rupiah = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const formatInput = input => {
+      const angka = input.value.replace(/\D/g, "");
+      input.value = angka ? rupiah(angka) : "";
+    };
+    const validateDiskon = input => {
+      const val = parseFloat(input.value);
+      const hasil = document.getElementById("hasil");
+      if (val > 100) {
+        input.value = 100;
+        hasil.style.color = "red";
+        hasil.innerText = "❌ Diskon tidak boleh lebih dari 100%!";
+      } else {
+        hasil.innerText = "";
+      }
+    };
+    const hitungDiskon = () => {
+      const harga = parseFloat(document.getElementById("harga").value.replace(/\./g, ""));
+      const diskon = parseFloat(document.getElementById("diskon").value);
+      const hasil = document.getElementById("hasil");
+      hasil.style.color = "red";
+      if (!harga || !diskon && diskon !== 0) return hasil.innerText = "❌ Harap isi semua kolom!";
+      if (harga <= 0) return hasil.innerText = "❌ Harga harus lebih dari 0!";
+      if (diskon < 0) return hasil.innerText = "❌ Diskon tidak boleh negatif!";
+      if (diskon > 100) return hasil.innerText = "❌ Diskon tidak boleh lebih dari 100%!";
+      const potongan = (diskon / 100) * harga;
+      const akhir = harga - potongan;
+      hasil.style.color = "green";
+      hasil.innerText =
+        `✅ Harga Asli: Rp ${rupiah(harga.toFixed(0))}\n` +
+        `✅ Potongan Diskon: Rp ${rupiah(potongan.toFixed(0))}\n` +
+        `✅ Harga Akhir: Rp ${rupiah(akhir.toFixed(0))}`;
+    };
+  </script>
+</body>
+</html>
