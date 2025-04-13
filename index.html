@@ -27,11 +27,9 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-    button {
-      background: #28a745;
-      color: #fff;
-      cursor: pointer;
-    }
+    button { color: #fff; cursor: pointer; }
+    .hitung { background: #28a745; }
+    .reset { background: #dc3545; }
     #hasil {
       margin-top: 10px;
       font-weight: bold;
@@ -47,32 +45,29 @@
     <input type="text" id="harga" placeholder="Masukkan harga" oninput="formatInput(this)" />
     <label>Diskon (%):</label>
     <input type="number" id="diskon" placeholder="Masukkan persen diskon" oninput="validateDiskon(this)" />
-    <button onclick="hitungDiskon()">Hitung</button>
+    <button class="hitung" onclick="hitungDiskon()">Hitung</button>
+    <button class="reset" onclick="resetForm()">Reset</button>
     <p id="hasil"></p>
   </div>
   <script>
     const rupiah = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const el = id => document.getElementById(id);
     const formatInput = input => {
       const angka = input.value.replace(/\D/g, "");
       input.value = angka ? rupiah(angka) : "";
     };
     const validateDiskon = input => {
       const val = parseFloat(input.value);
-      const hasil = document.getElementById("hasil");
-      if (val > 100) {
-        input.value = 100;
-        hasil.style.color = "red";
-        hasil.innerText = "❌ Diskon tidak boleh lebih dari 100%!";
-      } else {
-        hasil.innerText = "";
-      }
+      el("hasil").innerText = val > 100 ? "❌ Diskon tidak boleh lebih dari 100%!" : "";
+      if (val > 100) input.value = 100;
+      el("hasil").style.color = "red";
     };
     const hitungDiskon = () => {
-      const harga = parseFloat(document.getElementById("harga").value.replace(/\./g, ""));
-      const diskon = parseFloat(document.getElementById("diskon").value);
-      const hasil = document.getElementById("hasil");
+      const harga = parseFloat(el("harga").value.replace(/\./g, ""));
+      const diskon = parseFloat(el("diskon").value);
+      const hasil = el("hasil");
       hasil.style.color = "red";
-      if (!harga || !diskon && diskon !== 0) return hasil.innerText = "❌ Harap isi semua kolom!";
+      if (!harga || (!diskon && diskon !== 0)) return hasil.innerText = "❌ Harap isi semua kolom!";
       if (harga <= 0) return hasil.innerText = "❌ Harga harus lebih dari 0!";
       if (diskon < 0) return hasil.innerText = "❌ Diskon tidak boleh negatif!";
       if (diskon > 100) return hasil.innerText = "❌ Diskon tidak boleh lebih dari 100%!";
@@ -83,6 +78,11 @@
         `✅ Harga Asli: Rp ${rupiah(harga.toFixed(0))}\n` +
         `✅ Potongan Diskon: Rp ${rupiah(potongan.toFixed(0))}\n` +
         `✅ Harga Akhir: Rp ${rupiah(akhir.toFixed(0))}`;
+    };
+    const resetForm = () => {
+      el("harga").value = "";
+      el("diskon").value = "";
+      el("hasil").innerText = "";
     };
   </script>
 </body>
